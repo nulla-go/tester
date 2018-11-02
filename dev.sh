@@ -1,0 +1,2 @@
+cd cmd/tester
+fresh
