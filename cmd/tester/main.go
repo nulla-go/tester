@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
+	"github.com/strengine/Tester/reciever"
+	"github.com/strengine/Tester/requester"
 	"github.com/urfave/cli"
 )
 
@@ -28,7 +31,25 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				fmt.Println("Push")
+				file, err := os.Open(fileWithAddresses)
+				if err != nil {
+					fmt.Println("File didn't find")
+					return nil
+				}
+				body := make([]byte, 256)
+				l, err := file.Read(body)
+				if err != nil {
+					fmt.Println("Failed read file, ", fileWithAddresses, err)
+					return err
+				}
+				addresses := strings.Split(string(body[:l]), "\n")
+				//strings := mainStrings.Split()
+				//fmt.Println(addresses)
+				requesterServer := &requester.Requester{}
+				requesterServer.Push(addresses)
+
+				//requestServer := &requester.Requester{}
+				//requestServer.Start()
 				return nil
 			},
 		},
@@ -44,7 +65,8 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				fmt.Println("Recieve")
+				reciverServer := &reciever.Reciever{}
+				reciverServer.Start()
 				return nil
 			},
 		},

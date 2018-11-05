@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/strengine/core/av/avutil"
+	"github.com/strengine/Core/av/avutil"
 
-	"github.com/strengine/core/av/pubsub"
-	"github.com/strengine/core/format/rtmp"
+	"github.com/strengine/Core/av/pubsub"
+	"github.com/strengine/Core/format/rtmp"
 
-	"github.com/strengine/core/format"
+	"github.com/strengine/Core/format"
 )
 
 type writeFlusher struct {
@@ -29,8 +29,8 @@ type Channel struct {
 }
 
 type Reciever struct {
-	server   *rtmp.Server
-	l        *sync.RWMutex
+	server   rtmp.Server
+	l        sync.RWMutex
 	channels map[string]*Channel
 }
 
@@ -65,6 +65,7 @@ func (r *Reciever) Start() {
 		ch.que.Close()
 	}
 
-	fmt.Println("Reciever created ")
+	fmt.Println("Reciever created")
+	fmt.Println("Listing port :9150")
 	r.server.ListenAndServe()
 }
