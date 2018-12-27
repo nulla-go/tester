@@ -1,2 +1,1 @@
-rtmp://localhost:9150
-rtmp://localhost:9151
+rtmp://localhost:1935/?key=testKey

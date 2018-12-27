@@ -1,2 +1,0 @@
-cd cmd/tester
-fresh

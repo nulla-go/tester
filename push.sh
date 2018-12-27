@@ -1,0 +1,1 @@
+go run cmd/tester/main.go push
