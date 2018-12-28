@@ -67,7 +67,7 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				reciverServer := &reciever.Reciever{}
+				reciverServer := reciever.NewReciever()
 				reciverServer.Start(serverPort)
 				return nil
 			},

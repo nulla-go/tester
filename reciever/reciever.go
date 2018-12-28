@@ -25,30 +25,41 @@ func (self writeFlusher) Flush() error {
 	return nil
 }
 
-type Channel struct {
+type channel struct {
 	que *pubsub.Queue
 }
 
-type Reciever struct {
-	server   rtmp.Server
+type reciever struct {
+	server   *rtmp.Server
 	l        sync.RWMutex
-	channels map[string]*Channel
+	channels map[string]*channel
 }
 
-func (r *Reciever) Start(port string) {
+func NewReciever() (reciverServer *reciever) {
+	reciverServer = &reciever{}
+	reciverServer.server = &rtmp.Server{}
+	reciverServer.channels = map[string]*channel{}
+	reciverServer.l = sync.RWMutex{}
+	return
+}
+
+func (r *reciever) Start(port string) {
 	format.RegisterAll()
 	r.server.HandlePublish = func(conn *rtmp.Conn) {
 		streams, _ := conn.Streams()
-
+		key := conn.URL.Query().Get("key")
+		if key == "" {
+			return
+		}
 		r.l.Lock()
-		fmt.Println("Connected successefully")
+		fmt.Println("Connected successefully '", key, "'")
 
-		ch := r.channels[conn.URL.Path]
+		ch := r.channels[key]
 		if ch == nil {
-			ch = &Channel{}
+			ch = &channel{}
 			ch.que = pubsub.NewQueue()
 			ch.que.WriteHeader(streams)
-			r.channels[conn.URL.Path] = ch
+			r.channels[key] = ch
 		} else {
 			ch = nil
 		}
@@ -59,9 +70,9 @@ func (r *Reciever) Start(port string) {
 		}
 
 		avutil.CopyPackets(ch.que, conn)
-
+		fmt.Println("Connection '", key, "' is done")
 		r.l.Lock()
-		delete(r.channels, conn.URL.Path)
+		delete(r.channels, key)
 		r.l.Unlock()
 		ch.que.Close()
 	}
