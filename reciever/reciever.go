@@ -3,6 +3,7 @@ package reciever
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"sync"
 
@@ -34,7 +35,7 @@ type Reciever struct {
 	channels map[string]*Channel
 }
 
-func (r *Reciever) Start() {
+func (r *Reciever) Start(port string) {
 	format.RegisterAll()
 	r.server.HandlePublish = func(conn *rtmp.Conn) {
 		streams, _ := conn.Streams()
@@ -53,7 +54,7 @@ func (r *Reciever) Start() {
 		}
 		r.l.Unlock()
 		if ch == nil {
-			fmt.Println("Channel is null")
+			fmt.Println("Channel is nil")
 			return
 		}
 
@@ -64,8 +65,11 @@ func (r *Reciever) Start() {
 		r.l.Unlock()
 		ch.que.Close()
 	}
-
 	fmt.Println("Reciever created")
-	fmt.Println("Listing port :9150")
-	r.server.ListenAndServe()
+	fmt.Println("Listing port", port)
+	r.server.Addr = port
+	err := r.server.ListenAndServe()
+	if err != nil {
+		log.Println(err)
+	}
 }

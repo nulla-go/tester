@@ -16,6 +16,7 @@ func main() {
 	app.Name = "Strengine RTMP tester"
 	app.Usage = "Push and recive RTMP streams"
 	var fileWithAddresses string
+	var serverPort string
 
 	app.Commands = []cli.Command{
 		{
@@ -59,14 +60,15 @@ func main() {
 			Usage:   "Recieve streams",
 			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name:  "port, p",
-					Usage: "Port for server",
-					Value: "1935",
+					Name:        "port, p",
+					Usage:       "Port for server",
+					Value:       ":1935",
+					Destination: &serverPort,
 				},
 			},
 			Action: func(c *cli.Context) error {
 				reciverServer := &reciever.Reciever{}
-				reciverServer.Start()
+				reciverServer.Start(serverPort)
 				return nil
 			},
 		},
