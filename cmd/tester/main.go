@@ -6,14 +6,14 @@ import (
 	"os"
 	"strings"
 
-	"github.com/strengine/Tester/reciever"
-	"github.com/strengine/Tester/requester"
+	"github.com/nulla-go/tester/reciever"
+	"github.com/nulla-go/tester/requester"
 	"github.com/urfave/cli"
 )
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "Strengine RTMP tester"
+	app.Name = "Nulla RTMP tester"
 	app.Usage = "Push and recive RTMP streams"
 	var fileWithAddresses string
 	var serverPort string
